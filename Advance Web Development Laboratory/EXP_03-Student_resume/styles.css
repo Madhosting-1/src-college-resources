@@ -1,0 +1,165 @@
+/* General Styling */
+body {
+    font-family: 'Roboto Mono', 'Open Sans', sans-serif;
+    background: #f8f9fa;
+    color: #333;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+}
+
+/* Resume Container */
+.resume-container {
+    display: flex;
+    width: 80%;
+    max-width: 1200px;
+    margin-top: 30px;
+}
+
+/* Sidebar */
+.sidebar {
+    width: 25%;
+    background: linear-gradient(150deg, #00b7ff, #007dce);
+    color: white;
+    padding: 20px;
+    border-radius: 10px 0 0 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    animation: fadeIn 1.5s ease-in-out;
+
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.profile img {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    border: 3px solid #00b7ff;
+    margin-bottom: 10px;
+}
+
+nav ul {
+    list-style: none;
+    padding: 0;
+}
+
+nav ul li {
+    margin: 15px 0;
+}
+
+nav ul li a {
+    text-decoration: none;
+    color: white;
+    font-size: 16px;
+    transition: all 0.3s;
+}
+
+nav ul li a:hover {
+    background-color: #fff;
+    color: #00b7ff;
+    border-radius: 5px;
+    padding: 5px 10px;
+}
+
+/* Main Content */
+main {
+    width: 75%;
+    padding: 20px;
+    background: white;
+    border-radius: 0 10px 10px 0;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Card Sections */
+.card {
+    background: #fff;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 3px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.card:hover {
+    transform: scale(1.03);
+    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Headings */
+h2 {
+    color: #00b7ff;
+    border-bottom: 2px solid #ddd;
+    padding-bottom: 5px;
+}
+
+/* Skills Section */
+.skill-category {
+    margin-bottom: 15px;
+    border-left: 4px solid #00b7ff;
+    padding-left: 10px;
+}
+
+.skill-category h3 {
+    margin: 0;
+    color: #007dce;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.skill-category ul {
+    margin: 5px 0 0 0;
+    padding: 0;
+    list-style: none;
+}
+
+.skill-category ul li {
+    padding: 3px 0;
+    font-size: 15px;
+}
+
+/* Links */
+a {
+    color: #00b7ff;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: none;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .resume-container {
+        flex-direction: column;
+        width: 90%;
+    }
+    .sidebar {
+        width: 100%;
+        border-radius: 10px 10px 0 0;
+    }
+    main {
+        width: 100%;
+        border-radius: 0 0 10px 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    body {
+        font-size: 14px;
+    }
+    .resume-container {
+        flex-direction: column;
+    }
+}
