@@ -31,8 +31,8 @@ void ks(int c, int wt[], int p[], int n) {
 
 void main() {
     int c = 8;                        // Knapsack capacity = 8
-    int wt[] = {2, 3, 4, 5};         // Weights of 4 items
-    int p[] = {10, 20, 50, 60};      // Profits of 4 items
+    int wt[] = {1,2,3,2};         // Weights of 4 items
+    int p[] = {10,15,25,12};      // Profits of 4 items
     int n = sizeof(p)/sizeof(p[0]), i;
 
     printf("\nWeights: ");
