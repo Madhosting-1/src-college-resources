@@ -177,7 +177,7 @@ REMOVE r.rating;
 
 /* 4.5 Use SUM to calculate total rating given by “Sara” */
 MATCH (:User {name: "Sara"})-[r:ATTENDED]->(:Event)
-WHERE exists(r.rating)
+WHERE r.rating IS NOT NULL
 RETURN SUM(r.rating) AS TotalRatingBySara;
 
 
