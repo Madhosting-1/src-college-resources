@@ -1,0 +1,221 @@
+
+// To display all the nodes
+MATCH (n)
+OPTIONAL MATCH (n)-[r]->(m)
+RETURN n, r, m
+
+// to Delete all the nodes
+MATCH (n)
+DETACH DELETE n
+
+// ==============================
+// Question 1: Social Network Graph – People and Friends
+// ==============================
+
+/* 1.1 Create 5 Person nodes with user_ID, names, ages, email, location */
+CREATE (p1:Person {user_ID: 1, name: "Alice", age: 24, email: "alice@example.com", location: "Bangalore"}),
+       (p2:Person {user_ID: 2, name: "Bob", age: 26, email: "bob@example.com", location: "Delhi"}),
+       (p3:Person {user_ID: 3, name: "Charlie", age: 23, email: "charlie@example.com", location: "Bangalore"}),
+       (p4:Person {user_ID: 4, name: "David", age: 30, email: "david@example.com", location: "Mumbai"}),
+       (p5:Person {user_ID: 5, name: "Eve", age: 22, email: "eve@example.com", location: "Chennai");
+
+/* 1.2 Create FRIEND relationships for all */
+MATCH (a:Person), (b:Person)
+WHERE a.user_ID < b.user_ID
+CREATE (a)-[:FRIEND]->(b), (b)-[:FRIEND]->(a);
+
+/* 1.3 Use SET to add a city property to each person */
+MATCH (p:Person)
+SET p.city = p.location;
+
+/* 1.4 Use MATCH and WHERE to find people in city “Bangalore” and REMOVE city property */
+MATCH (p:Person)
+WHERE p.city = "Bangalore"
+REMOVE p.city;
+
+/* 1.5 Delete any person older than 25 using DELETE */
+MATCH (p:Person)
+WHERE p.age > 25
+DETACH DELETE p;
+
+
+// ==============================
+// Question 2: Product Catalog – Category, Product, and Search
+// ==============================
+
+/* 2.1 Create 5 Category nodes */
+CREATE (:Category {name: "Electronics"}),
+       (:Category {name: "Books"}),
+       (:Category {name: "Fashion"}),
+       (:Category {name: "Tech"}),
+       (:Category {name: "Toys"});
+
+/* 2.2 Use FOREACH to iterate over list and create Product nodes with a name */
+WITH ["TV", "Tablet", "T-Shirt", "Toy Car", "Thriller Book"] AS products
+FOREACH (p IN products | CREATE (:Product {name: p}));
+
+/* 2.3 Use SET to add a price and link each product to a category */
+MATCH (p:Product {name: "TV"}), (c:Category {name: "Electronics"})
+SET p.price = 45000
+CREATE (p)-[:BELONGS_TO]->(c);
+
+MATCH (p:Product {name: "Tablet"}), (c:Category {name: "Tech"})
+SET p.price = 30000
+CREATE (p)-[:BELONGS_TO]->(c);
+
+MATCH (p:Product {name: "T-Shirt"}), (c:Category {name: "Fashion"})
+SET p.price = 999
+CREATE (p)-[:BELONGS_TO]->(c);
+
+MATCH (p:Product {name: "Toy Car"}), (c:Category {name: "Toys"})
+SET p.price = 599
+CREATE (p)-[:BELONGS_TO]->(c);
+
+MATCH (p:Product {name: "Thriller Book"}), (c:Category {name: "Books"})
+SET p.price = 499
+CREATE (p)-[:BELONGS_TO]->(c);
+
+/* 2.4 Use MATCH and WHERE with CONTAINS to find products with name containing “T” */
+MATCH (p:Product)
+WHERE p.name CONTAINS "T"
+RETURN COUNT(p) AS products_with_T;
+
+/* 2.5 Return all products sorted in ascending order of price */
+MATCH (p:Product)
+RETURN p.name AS name, p.price AS price
+ORDER BY p.price ASC;
+
+
+// ==============================
+// Question 3: Movie Graph – Actors and Films
+// ==============================
+
+/* 3.1 Create 5 Actor nodes and 5 Movie nodes */
+CREATE (:Actor {name: "Tom"}),
+       (:Actor {name: "Emma"}),
+       (:Actor {name: "John"}),
+       (:Actor {name: "Alice"}),
+       (:Actor {name: "Bob"}),
+
+       (:Movie {title: "Fast Track"}),
+       (:Movie {title: "Fight Club"}),
+       (:Movie {title: "Frozen World"}),
+       (:Movie {title: "Glory Days"}),
+       (:Movie {title: "Final Stand"});
+
+/* 3.2 Connect them with ACTED_IN relationships and use SET to define roles */
+MATCH (a:Actor {name: "Tom"}), (m:Movie {title: "Fast Track"})
+CREATE (a)-[r:ACTED_IN]->(m) SET r.role = "Hero";
+
+MATCH (a:Actor {name: "Emma"}), (m:Movie {title: "Frozen World"})
+CREATE (a)-[r:ACTED_IN]->(m) SET r.role = "Lead";
+
+MATCH (a:Actor {name: "John"}), (m:Movie {title: "Fight Club"})
+CREATE (a)-[r:ACTED_IN]->(m) SET r.role = "Fighter";
+
+MATCH (a:Actor {name: "Alice"}), (m:Movie {title: "Final Stand"})
+CREATE (a)-[r:ACTED_IN]->(m) SET r.role = "Survivor";
+
+MATCH (a:Actor {name: "Bob"}), (m:Movie {title: "Glory Days"})
+CREATE (a)-[r:ACTED_IN]->(m) SET r.role = "Veteran";
+
+/* 3.3 Use MATCH and WHERE with STARTS WITH to find movies starting with 'F' */
+MATCH (m:Movie)
+WHERE m.title STARTS WITH "F"
+RETURN m.title AS MovieTitle;
+
+/* 3.4 Use COUNT to get the number of movies per actor */
+MATCH (a:Actor)-[:ACTED_IN]->(m:Movie)
+RETURN a.name AS Actor, COUNT(m) AS MovieCount;
+
+/* 3.5 Return top actors by number of movies */
+MATCH (a:Actor)-[:ACTED_IN]->(m:Movie)
+RETURN a.name AS Actor, COUNT(m) AS Movies
+ORDER BY Movies DESC
+LIMIT 3;
+
+
+// ==============================
+// Question 4: Event Attendance System
+// ==============================
+
+/* 4.1 Create Event nodes and User nodes */
+CREATE (:Event {name: "TechCon"}),
+       (:Event {name: "DevSummit"}),
+       (:Event {name: "CodeFest"}),
+       (:Event {name: "AIExpo"}),
+       (:Event {name: "CloudDays"}),
+       (:Event {name: "WebWorld"}),
+       (:Event {name: "DataDrive"}),
+       (:User {name: "John"}),
+       (:User {name: "Sara"});
+
+/* 4.2 CREATE relationships between users and events with SET rating */
+MATCH (u:User {name: "John"}), (e:Event {name: "TechCon"})
+CREATE (u)-[r:ATTENDED]->(e) SET r.rating = 4;
+
+MATCH (u:User {name: "John"}), (e:Event {name: "CodeFest"})
+CREATE (u)-[r:ATTENDED]->(e) SET r.rating = 2;
+
+MATCH (u:User {name: "Sara"}), (e:Event {name: "DevSummit"})
+CREATE (u)-[r:ATTENDED]->(e) SET r.rating = 5;
+
+MATCH (u:User {name: "Sara"}), (e:Event {name: "CloudDays"})
+CREATE (u)-[r:ATTENDED]->(e) SET r.rating = 3;
+
+MATCH (u:User {name: "Sara"}), (e:Event {name: "AIExpo"})
+CREATE (u)-[r:ATTENDED]->(e) SET r.rating = 1;
+
+/* 4.3 Use WHERE to filter events attended by “John” */
+MATCH (u:User {name: "John"})-[:ATTENDED]->(e:Event)
+RETURN e.name AS EventsAttendedByJohn;
+
+/* 4.4 REMOVE rating property if rating < 3 */
+MATCH (:User)-[r:ATTENDED]->(:Event)
+WHERE r.rating < 3
+REMOVE r.rating;
+
+/* 4.5 Use SUM to calculate total rating given by “Sara” */
+MATCH (:User {name: "Sara"})-[r:ATTENDED]->(:Event)
+WHERE exists(r.rating)
+RETURN SUM(r.rating) AS TotalRatingBySara;
+
+
+// ==============================
+// Question 5: City Import and Clean-up
+// ==============================
+
+/* 5.1 Use FOREACH with city list to create City nodes */
+WITH ["Berlin", "Delhi", "Madrid", "Rome", "Osaka"] AS cities
+FOREACH (cityName IN cities |
+  CREATE (:City {name: cityName})
+);
+
+/* 5.2 Add region property based on city name */
+MATCH (c:City)
+SET c.region =
+  CASE c.name
+    WHEN "Delhi" THEN "Asia"
+    WHEN "Osaka" THEN "Asia"
+    ELSE "Europe"
+  END;
+
+/* 5.3 Use MATCH and STARTS WITH to find cities starting with 'D' */
+MATCH (c:City)
+WHERE c.name STARTS WITH "D"
+RETURN c.name AS CitiesStartingWithD;
+
+/* 5.4 DELETE cities where region = "Europe" */
+MATCH (c:City)
+WHERE c.region = "Europe"
+DELETE c;
+
+/* 5.5 Count how many cities remain and return city_count */
+MATCH (c:City)
+RETURN COUNT(c) AS city_count;
+
+
+Delete cities where region = “Europe” using DELETE.
+
+
+Count how many cities remain and return that number as city_count.
